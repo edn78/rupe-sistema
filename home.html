@@ -1,220 +1,27 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RUPE SISTEMA</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Arial', sans-serif; }
-    body {
-      min-height: 100vh;
-      padding: 30px;
-      color: white;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      position: relative;
-    }
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=1600&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
-      opacity: 0.15;
-      z-index: -1;
-    }
-    .container { max-width: 1400px; margin: 0 auto; }
-    .topo {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 35px;
-      flex-wrap: wrap;
-      gap: 20px;
-      background: rgba(255,255,255,0.05);
-      padding: 20px 25px;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-    }
-    .titulo { font-size: 38px; font-weight: 700; background: linear-gradient(135deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .sub { color: #94a3b8; margin-top: 6px; font-size: 14px; }
-    #bemvindo { margin-top: 8px; font-size: 14px; color: #a5b4fc; font-weight: 500; }
-    .btn-sair {
-      background: linear-gradient(135deg, #dc2626, #b91c1c);
-      border: none;
-      padding: 12px 24px;
-      border-radius: 12px;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn-sair:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(220,38,38,0.3); }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 25px;
-      margin-bottom: 35px;
-    }
-    .card {
-      background: rgba(255,255,255,0.95);
-      color: #0f172a;
-      border-radius: 24px;
-      padding: 28px 22px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 15px 35px -12px rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    .card:hover { transform: translateY(-8px); box-shadow: 0 25px 45px -12px rgba(0,0,0,0.4); background: rgba(255,255,255,1); }
-    .card h2 { font-size: 22px; margin-bottom: 10px; font-weight: 700; }
-    .card p { color: #64748b; font-size: 13px; line-height: 1.4; }
-    .card:nth-child(1) h2 { color: #2563eb; }
-    .card:nth-child(2) h2 { color: #16a34a; }
-    .card:nth-child(3) h2 { color: #7c3aed; }
-    .card:nth-child(4) h2 { color: #d97706; }
-    .card:nth-child(5) h2 { color: #0f766e; }
-    .painel {
-      background: rgba(255,255,255,0.95);
-      color: #0f172a;
-      border-radius: 24px;
-      padding: 28px 30px;
-      box-shadow: 0 15px 35px -12px rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    .painel h2 { margin-bottom: 25px; font-size: 20px; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px; }
-    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-    .stat {
-      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-      border-radius: 20px;
-      padding: 22px;
-      transition: all 0.2s ease;
-      text-align: center;
-      border: 1px solid #e2e8f0;
-    }
-    .stat:hover { transform: scale(1.02); box-shadow: 0 10px 25px -8px rgba(0,0,0,0.15); }
-    .stat-num { font-size: 42px; font-weight: 800; background: linear-gradient(135deg, #1e3a8a, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .stat-label { margin-top: 8px; color: #64748b; font-size: 13px; font-weight: 500; }
-    @media (max-width: 768px) {
-      body { padding: 18px; }
-      .topo { padding: 15px 20px; }
-      .titulo { font-size: 28px; }
-      .cards { gap: 15px; }
-      .card { padding: 20px 18px; }
-      .card h2 { font-size: 18px; }
-      .painel { padding: 20px; }
-      .stat-num { font-size: 32px; }
-    }
-    @media (max-width: 480px) { .stats { grid-template-columns: 1fr; } }
-  </style>
-</head>
-<body>
-
-<div class="container">
-
-  <div class="topo">
-    <div>
-      <div class="titulo">⚖️ RUPE</div>
-      <div class="sub">Sistema de Controle de Tramitação</div>
-      <div id="bemvindo" class="sub"></div>
-    </div>
-    <button class="btn-sair" onclick="sair()">🚪 SAIR</button>
-  </div>
-
-  <div class="cards">
-    <div class="card" onclick="abrir('cadastro')"><h2>📥 Cadastro</h2><p>Entrada de documentos na RUPE</p></div>
-    <div class="card" onclick="abrir('consulta')"><h2>🔎 Consulta</h2><p>CGPM / Portaria / RG</p></div>
-    <div class="card" onclick="abrir('andamento')"><h2>📜 Tramitação</h2><p>Atualização dos documentos</p></div>
-    <div class="card" onclick="abrir('estatisticas')"><h2>📊 Estatísticas</h2><p>Estatísticas RUPE</p></div>
-    <div class="card" onclick="abrir('documentos')"><h2>📂 Carga RUPE</h2><p>Documentos na Carga da RUPE</p></div>
-    <div class="card" onclick="abrir('fora_rupe')"><h2>📂 Fora da RUPE</h2><p>Documentos fora da RUPE</p></div>
-    <div class="card" onclick="abrir('relatores')"><h2>👨‍⚖️ Relatores</h2><p>Documentos com relatores</p></div>
-    <div class="card" onclick="abrir('etiquetas')"><h2>🏷️ Etiquetas</h2><p>Imprimir etiquetas 4x4cm</p></div>
-  </div>
-
-  <div class="painel">
-    <h2>📈 Painel Geral</h2>
-    <div class="stats">
-      <div class="stat"><div class="stat-num" id="total">0</div><div class="stat-label">Total de Processos</div></div>
-      <div class="stat"><div class="stat-num" id="rupe">0</div><div class="stat-label">Na RUPE</div></div>
-      <div class="stat"><div class="stat-num" id="relatoria">0</div><div class="stat-label">Na Relatoria</div></div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-// URL do seu Apps Script
-const API_URL = "https://script.google.com/macros/s/AKfycbw-uN5yhNx_J-naB830EGpMT801UMMDczf74SHP4us/exec";
-const APP_URL = "https://script.google.com/macros/s/AKfycbw-uN5yhNx_J-naB830EGpMT801UMMDczf74SHP4us/exec";
-
-function abrir(page) {
-  window.open(APP_URL + "?page=" + page, "_blank");
-}
-
-function sair() {
-  localStorage.clear();
-  window.location.href = "login.html";
-}
-
-function carregarUsuario() {
-  const nome = localStorage.getItem("rupe_nome");
-  const nivel = localStorage.getItem("rupe_nivel");
-  if (nome) {
-    document.getElementById("bemvindo").innerHTML = `👋 Bem-vindo, <b>${nome}</b>`;
-    if (nivel) document.getElementById("bemvindo").innerHTML += ` <span style="opacity:0.8;">(${nivel})</span>`;
-  }
-}
-
-async function carregarStats() {
-  try {
-    console.log("Chamando API...");
-    const response = await fetch(`${API_URL}?acao=dashboard`);
-    const text = await response.text();
-    console.log("Resposta bruta:", text);
+function carregarStats() {
+  const callbackName = "jsonpStats_" + Date.now();
+  
+  window[callbackName] = function(r) {
+    delete window[callbackName];
+    document.body.removeChild(script);
     
-    const r = JSON.parse(text);
-    console.log("Resposta parseada:", r);
-    
-    if (r.resumo) {
+    if (r && r.resumo) {
       document.getElementById("total").innerHTML = r.resumo.total || 0;
       document.getElementById("rupe").innerHTML = r.resumo.rupe || 0;
       document.getElementById("relatoria").innerHTML = r.resumo.relatoria || 0;
-    } else if (r.erro) {
+    } else if (r && r.erro) {
       console.error("Erro da API:", r.erro);
     }
-  } catch (err) {
-    console.error("Erro ao carregar stats:", err);
-  }
+  };
+  
+  const script = document.createElement('script');
+  script.src = `${API_URL}?acao=dashboard&callback=${callbackName}`;
+  script.onerror = function() {
+    console.error("Erro ao carregar stats");
+    delete window[callbackName];
+    document.body.removeChild(script);
+  };
+  document.body.appendChild(script);
 }
-
-function verificarAutenticacao() {
-  const token = localStorage.getItem("rupe_token");
-  if (!token) {
-    window.location.href = "login.html";
-    return false;
-  }
-  return true;
-}
-
-window.onload = function() {
-  if (verificarAutenticacao()) {
-    carregarStats();
-    carregarUsuario();
-  }
-};
-</script>
-
-</body>
-</html>
 </body>
 </html>
