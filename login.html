@@ -1,137 +1,28 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RUPE - Login</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Arial", sans-serif; }
-    body {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-    }
-    .login-box {
-      width: 100%;
-      max-width: 420px;
-      padding: 40px 35px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
-      text-align: center;
-    }
-    .logo {
-      width: 85px;
-      height: 85px;
-      margin: 0 auto 15px auto;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 36px;
-      background: #0b2c5f;
-      color: white;
-    }
-    h1 { font-size: 34px; color: #0b2c5f; margin-bottom: 6px; }
-    .subtitulo { font-size: 13px; color: #64748b; margin-bottom: 25px; }
-    .campo { margin-bottom: 16px; text-align: left; }
-    .campo label { font-size: 13px; font-weight: bold; color: #334155; display: block; margin-bottom: 6px; }
-    .campo input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid #cbd5e1;
-      background: #f8fafc;
-      font-size: 14px;
-    }
-    .btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #1e3a8a, #0b2c5f);
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-    .btn-cadastrar {
-      background: linear-gradient(135deg, #10b981, #059669);
-      margin-top: 10px;
-    }
-    .btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
-    .msg { margin-top: 15px; font-size: 13px; min-height: 18px; }
-    .erro { color: #b91c1c; }
-    .ok { color: #15803d; }
-    .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 0.6s linear infinite;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .footer { margin-top: 18px; font-size: 11px; color: #64748b; }
-  </style>
-</head>
-<body>
-
-<div class="login-box">
-  <div class="logo">⚖️</div>
-  <h1>RUPE</h1>
-  <div class="subtitulo">Reserva Única de Procedimentos e Expedição</div>
-
-  <div class="campo">
-    <label>Usuário</label>
-    <input type="text" id="usuario" placeholder="Digite seu usuário">
-  </div>
-
-  <div class="campo">
-    <label>Senha</label>
-    <input type="password" id="senha" placeholder="Digite sua senha">
-  </div>
-
-  <button class="btn" id="btnLogin" onclick="login()">ENTRAR NO SISTEMA</button>
-  <button class="btn btn-cadastrar" onclick="abrirCadastro()">📝 CRIAR CONTA</button>
-
-  <div id="msg" class="msg"></div>
-  <div class="footer">Acesso restrito • Uso interno • RUPE</div>
-</div>
-
-<script>
-const API_URL = "https://script.google.com/macros/s/AKfycbw-uN5yhNx_J-naB830EGpMT801UMMDczf74SHP4us/exec";
-
-function mostrarMensagem(texto, tipo) {
-  const msg = document.getElementById("msg");
-  msg.innerHTML = texto;
-  msg.className = "msg " + tipo;
-  setTimeout(() => { msg.innerHTML = ""; msg.className = "msg"; }, 3000);
-}
-
-async function login() {
+function login() {
   const usuario = document.getElementById("usuario").value.trim();
   const senha = document.getElementById("senha").value;
   const btn = document.getElementById("btnLogin");
+  const msg = document.getElementById("msg");
+
+  msg.innerHTML = "";
+  msg.className = "msg";
 
   if (!usuario || !senha) {
-    mostrarMensagem("❌ Preencha usuário e senha", "erro");
+    msg.classList.add("erro");
+    msg.innerHTML = "❌ Preencha usuário e senha";
     return;
   }
 
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Entrando...';
 
-  try {
-    const response = await fetch(`${API_URL}?acao=login&usuario=${encodeURIComponent(usuario)}&senha=${encodeURIComponent(senha)}`);
-    const r = await response.json();
-
+  // Usar JSONP para evitar CORS
+  const callbackName = "jsonpCallback_" + Date.now();
+  
+  window[callbackName] = function(r) {
+    delete window[callbackName];
+    document.body.removeChild(script);
+    
     btn.disabled = false;
     btn.innerHTML = "ENTRAR NO SISTEMA";
 
@@ -140,21 +31,24 @@ async function login() {
       localStorage.setItem("rupe_nome", r.nome);
       localStorage.setItem("rupe_usuario", r.usuario);
       localStorage.setItem("rupe_nivel", r.nivel);
-      mostrarMensagem(`👋 Bem-vindo, ${r.nome || r.usuario}`, "ok");
+      msg.classList.add("ok");
+      msg.innerHTML = `👋 Bem-vindo, ${r.nome || r.usuario}!`;
       setTimeout(() => { window.location.href = "home.html"; }, 1000);
     } else {
-      mostrarMensagem("❌ " + (r.mensagem || r.erro || "Login inválido"), "erro");
+      msg.classList.add("erro");
+      msg.innerHTML = "❌ " + (r.mensagem || r.erro || "Login inválido");
     }
-  } catch (err) {
+  };
+  
+  const script = document.createElement('script');
+  script.src = `${API_URL}?acao=login&usuario=${encodeURIComponent(usuario)}&senha=${encodeURIComponent(senha)}&callback=${callbackName}`;
+  script.onerror = function() {
     btn.disabled = false;
     btn.innerHTML = "ENTRAR NO SISTEMA";
-    mostrarMensagem("❌ Erro no servidor", "erro");
-  }
+    msg.classList.add("erro");
+    msg.innerHTML = "❌ Erro no servidor";
+    delete window[callbackName];
+    document.body.removeChild(script);
+  };
+  document.body.appendChild(script);
 }
-
-function abrirCadastro() {
-  window.location.href = "cadastrar.html";
-}
-</script>
-</body>
-</html>
